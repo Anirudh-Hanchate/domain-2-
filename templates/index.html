@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CogniScreen — Domain 2: Clock Drawing Test</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- ── Sidebar ─────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-icon"><i class="fa-solid fa-brain"></i></div>
+      <div>
+        <div class="logo-title">CogniScreen</div>
+        <div class="logo-sub">AI Cognitive Assessment</div>
+      </div>
+    </div>
+
+    <nav class="domain-nav">
+      <div class="nav-label">Assessment Domains</div>
+      <a class="nav-item done" href="#">
+        <span class="nav-num">1</span>
+        <span>Memory &amp; Recall</span>
+        <i class="fa-solid fa-check nav-check"></i>
+      </a>
+      <a class="nav-item active" href="#">
+        <span class="nav-num">2</span>
+        <span>Visuospatial</span>
+      </a>
+      <a class="nav-item locked" href="#">
+        <span class="nav-num">3</span>
+        <span>Language Fluency</span>
+        <i class="fa-solid fa-lock nav-lock"></i>
+      </a>
+      <a class="nav-item locked" href="#">
+        <span class="nav-num">4</span>
+        <span>Trail Making</span>
+        <i class="fa-solid fa-lock nav-lock"></i>
+      </a>
+      <a class="nav-item locked" href="#">
+        <span class="nav-num">5</span>
+        <span>Processing Speed</span>
+        <i class="fa-solid fa-lock nav-lock"></i>
+      </a>
+    </nav>
+
+    <div class="sidebar-info">
+      <div class="info-label">CLOX Scoring System</div>
+      <div class="info-row"><span>Circle</span><span class="info-pts">2 pts</span></div>
+      <div class="info-row"><span>Numbers present</span><span class="info-pts">3 pts</span></div>
+      <div class="info-row"><span>Number placement</span><span class="info-pts">4 pts</span></div>
+      <div class="info-row"><span>Hands present</span><span class="info-pts">2 pts</span></div>
+      <div class="info-row"><span>Hand length</span><span class="info-pts">2 pts</span></div>
+      <div class="info-row"><span>Time accuracy</span><span class="info-pts">2 pts</span></div>
+      <div class="info-total"><span>Total</span><span>15 pts</span></div>
+    </div>
+  </aside>
+
+  <!-- ── Main Content ─────────────────────────────────── -->
+  <main class="main">
+
+    <!-- Header -->
+    <div class="page-header">
+      <div>
+        <div class="domain-tag">Domain 2 of 5 &nbsp;·&nbsp; Visuospatial Ability</div>
+        <h1>Clock Drawing Test</h1>
+        <p class="page-desc">
+          Drawing a clock simultaneously tests memory, spatial planning, executive function, and motor execution —
+          making it one of the most sensitive multi-domain cognitive screens available.
+        </p>
+      </div>
+    </div>
+
+    <!-- Instruction card -->
+    <div class="instruction-card">
+      <div class="instruction-icon"><i class="fa-solid fa-comment-medical"></i></div>
+      <div>
+        <div class="instruction-label">Say exactly this to the patient</div>
+        <div class="instruction-text">
+          "I want you to draw a clock. Put in all the numbers, and set the time to ten past ten — 10:10."
+        </div>
+        <div class="instruction-note">No further guidance. How they interpret and execute is the diagnostic data.</div>
+      </div>
+    </div>
+
+    <!-- Canvas section -->
+    <div class="canvas-card">
+      <div class="canvas-toolbar">
+        <div class="toolbar-left">
+          <button class="tool-btn active" id="penBtn" onclick="setTool('pen')" title="Draw">
+            <i class="fa-solid fa-pen"></i> Draw
+          </button>
+          <button class="tool-btn" id="eraseBtn" onclick="setTool('erase')" title="Erase">
+            <i class="fa-solid fa-eraser"></i> Erase
+          </button>
+          <div class="tool-divider"></div>
+          <span class="size-label">Size</span>
+          <input type="range" id="brushSize" min="1" max="16" value="2" step="1"
+                 oninput="brushSz=+this.value; updateCursor()">
+          <div class="tool-divider"></div>
+          <div class="color-row">
+            <div class="color-dot sel" style="background:#1a1a1a" onclick="setColor('#1a1a1a',this)"></div>
+            <div class="color-dot" style="background:#1a56a8" onclick="setColor('#1a56a8',this)"></div>
+            <div class="color-dot" style="background:#b91c1c" onclick="setColor('#b91c1c',this)"></div>
+            <div class="color-dot" style="background:#6b7280" onclick="setColor('#6b7280',this)"></div>
+          </div>
+        </div>
+        <div class="toolbar-right">
+          <label class="tool-btn upload-lbl" for="fileInput">
+            <i class="fa-solid fa-upload"></i> Upload image
+          </label>
+          <input type="file" id="fileInput" accept="image/*" onchange="loadImage(event)">
+          <button class="tool-btn" onclick="clearCanvas()">
+            <i class="fa-solid fa-trash-can"></i> Clear
+          </button>
+        </div>
+      </div>
+
+      <div class="canvas-wrap" id="canvasWrap">
+        <canvas id="clockCanvas" width="780" height="400"></canvas>
+        <div class="canvas-placeholder" id="placeholder">
+          <i class="fa-regular fa-pen-to-square"></i>
+          <p>Patient draws here<br><small>or upload a photo of their drawing</small></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analyze button -->
+    <div style="display:flex; justify-content:flex-end; margin: 1rem 0;">
+      <button class="analyze-btn" id="analyzeBtn" onclick="analyzeDrawing()">
+        <i class="fa-solid fa-microscope"></i>
+        <span>Analyze drawing with AI</span>
+      </button>
+    </div>
+
+    <!-- Loading state -->
+    <div class="loading-area" id="loadingArea" style="display:none">
+      <div class="spinner"></div>
+      <div id="loadingMsg">Analyzing clock drawing…</div>
+    </div>
+
+    <!-- Error banner -->
+    <div class="error-banner" id="errorBanner" style="display:none">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <span id="errorMsg">An error occurred.</span>
+    </div>
+
+    <!-- Results -->
+    <div id="resultsSection" style="display:none">
+
+      <!-- Total score banner -->
+      <div class="result-header" id="resultHeader">
+        <div class="result-score-block">
+          <div class="result-score" id="totalScore">—</div>
+          <div class="result-denom">/ 15</div>
+        </div>
+        <div class="result-meta">
+          <div class="result-severity" id="severityLabel">—</div>
+          <div class="result-desc" id="severityDesc">—</div>
+        </div>
+        <div class="sev-badge" id="severityBadge">—</div>
+      </div>
+
+      <!-- Sub-scores grid -->
+      <div class="scores-grid" id="scoresGrid"></div>
+
+      <!-- Severity table -->
+      <div class="section-label">Severity reference</div>
+      <div class="severity-table">
+        <div class="sev-row" id="sref-13"><span class="sref-range">13–15</span><span class="sref-tier sref-green">Normal</span><span class="sref-desc">Visuospatial function intact</span></div>
+        <div class="sev-row" id="sref-10"><span class="sref-range">10–12</span><span class="sref-tier sref-amber">Mild concern</span><span class="sref-desc">Possible early decline — retest in 3 months</span></div>
+        <div class="sev-row" id="sref-7"><span class="sref-range">7–9</span><span class="sref-tier sref-orange">Moderate concern</span><span class="sref-desc">Consistent with MCI — flag for further testing</span></div>
+        <div class="sev-row" id="sref-4"><span class="sref-range">4–6</span><span class="sref-tier sref-red">Significant impairment</span><span class="sref-desc">Consistent with mild-moderate dementia</span></div>
+        <div class="sev-row" id="sref-0"><span class="sref-range">0–3</span><span class="sref-tier sref-crimson">Severe impairment</span><span class="sref-desc">Cannot complete basic visuospatial task</span></div>
+      </div>
+
+      <!-- Clinical flags -->
+      <div class="section-label" style="margin-top:1.5rem">Clinical observations</div>
+      <div id="flagsList"></div>
+
+      <!-- AI reasoning -->
+      <div class="section-label" style="margin-top:1.5rem">AI clinical summary</div>
+      <div class="reasoning-box" id="reasoningBox"></div>
+
+      <!-- Actions -->
+      <div class="result-actions">
+        <button class="action-btn" onclick="printReport()"><i class="fa-solid fa-print"></i> Print report</button>
+        <button class="action-btn" onclick="resetTest()"><i class="fa-solid fa-rotate-left"></i> New assessment</button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
